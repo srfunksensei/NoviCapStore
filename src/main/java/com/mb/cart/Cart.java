@@ -9,23 +9,35 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.mb.cart.discount.DiscountStrategy;
 import com.mb.product.Product;
 
 public class Cart {
 
     private Map<String, List<Product>> items;
+    private Map<String, List<DiscountStrategy>> discountStrategies;
 
     public Cart() {
-        this.items = new HashMap<String, List<Product>>();
+        this.items = new HashMap<>();
+        this.discountStrategies = new HashMap<>();
+    }
+    
+    public Cart(final List<Product> items) {
+        this(new HashMap<>(), items);
     }
 
-    public Cart(final List<Product> items) {
+    public Cart(final Map<String, List<DiscountStrategy>> discountStrategies) {
+        this(discountStrategies, new ArrayList<>());
+    }
+    
+    public Cart(final Map<String, List<DiscountStrategy>> discountStrategies, final List<Product> items) {
         final List<Product> list = Optional.ofNullable(items) //
                 .map(List::stream) //
                 .orElseGet(Stream::empty) //
                 .collect(Collectors.toList());
         
         this.items = list.stream().collect(Collectors.groupingBy(Product::getCode));
+        this.discountStrategies = discountStrategies;
     }
     
     public boolean isEmpty() {
@@ -79,12 +91,37 @@ public class Cart {
     public BigDecimal getTotal() {
         BigDecimal total = new BigDecimal(0);
         for (String code : items.keySet()) {
-            final int numOfItems = items.get(code).size();
-            final BigDecimal singlePrice = items.get(code).stream().findFirst().get().getPrice();
+            final BigDecimal productTotal = getTotalForProductType(items.get(code));
             
-            total = total.add(singlePrice.multiply(new BigDecimal(numOfItems)));
+            total = total.add(productTotal);
         }
         return total;
+    }
+    
+    public BigDecimal getTotalDiscounted() {
+        BigDecimal total = new BigDecimal(0);
+        for (String code : items.keySet()) {
+            BigDecimal productTotal = getTotalForProductType(items.get(code));
+            
+            final List<DiscountStrategy> discountStrategiesList = discountStrategies.get(code);
+            if (discountStrategiesList != null && !discountStrategiesList.isEmpty()) {
+                for (DiscountStrategy s : discountStrategiesList) {
+                    final BigDecimal discountedPrice = s.getDiscountPrice(items);
+                    if (discountedPrice.compareTo(productTotal) < 0) {
+                        productTotal = discountedPrice;
+                    }
+                }
+            }
+            
+            total = total.add(productTotal);
+        }
+        return total;
+    }
+    
+    private BigDecimal getTotalForProductType(final List<Product> products) {
+        final int numOfItems = products.size();
+        final BigDecimal singlePrice = products.stream().findFirst().get().getPrice();
+        return singlePrice.multiply(new BigDecimal(numOfItems));
     }
     
     public void receipt() {
