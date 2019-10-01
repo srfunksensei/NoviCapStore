@@ -23,7 +23,7 @@ public class JsonProductFileReader {
 
     private final Logger logger = Logger.getLogger(JsonProductFileReader.class.getName());
 
-    public static final String PRODUCT_FILE_NAME = "products.json";
+    public static final String PRODUCT_FILE_NAME = "json/products.json";
 
     private Reader reader;
 

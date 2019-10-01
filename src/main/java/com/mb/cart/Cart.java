@@ -126,8 +126,10 @@ public class Cart {
     
     public void receipt() {
         for (String code : items.keySet()) {
-            System.out.print(code + " " + items.get(code).size());
+            System.out.println(code + " " + items.get(code).size());
         }
+        
+        System.out.println("\nTotal price: " + getTotalDiscounted());
     }
     
     @Override
