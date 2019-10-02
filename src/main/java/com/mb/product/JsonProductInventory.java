@@ -24,8 +24,7 @@ public class JsonProductInventory implements ProductInventory {
     }
     
     public JsonProductInventory() throws FileNotFoundException {
-        final String fileName = getClass().getClassLoader().getResource(JsonProductFileReader.PRODUCT_FILE_NAME).getFile();
-        reader = new JsonProductFileReader(fileName);
+        reader = new JsonProductFileReader(JsonProductFileReader.PRODUCT_FILE_NAME);
     }
 
     public Set<Product> getItems() {

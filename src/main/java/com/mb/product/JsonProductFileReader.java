@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +35,23 @@ public class JsonProductFileReader {
             throw new IllegalArgumentException();
         }
 
-        this.reader = new FileReader(fileName);
+        final InputStream in = accessFile(fileName);
+        if (in == null) {
+            throw new FileNotFoundException();
+        }
+        
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("products", null);
+            tempFile.deleteOnExit();
+            
+            Files.copy(in, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Could not create or copy temp file " + e.getMessage());
+            throw new FileNotFoundException();
+        }
+        
+        this.reader = new FileReader(tempFile);
     }
 
     public JsonProductFileReader(final File file) throws FileNotFoundException {
@@ -46,6 +65,16 @@ public class JsonProductFileReader {
     public Set<Product> read() throws ParseException {
         final String json = parseJsonFile();
         return parseJsonString(json);
+    }
+    
+    private InputStream accessFile(final String resource) {
+        // this is the path within the jar file
+        InputStream input = JsonProductInventory.class.getResourceAsStream(resource);
+        if (input == null) {
+            input = JsonProductInventory.class.getClassLoader().getResourceAsStream(resource);
+        }
+
+        return input;
     }
 
     private String parseJsonFile() throws ParseException {
