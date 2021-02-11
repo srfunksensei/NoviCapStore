@@ -7,6 +7,7 @@ import java.util.Map;
 import com.mb.product.Product;
 
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
 @AllArgsConstructor
 public class NForOneDiscountStrategy implements DiscountStrategy {
@@ -15,7 +16,7 @@ public class NForOneDiscountStrategy implements DiscountStrategy {
     final int n;
 
     @Override
-    public BigDecimal getDiscountPrice(final Map<String, List<Product>> items) {
+    public BigDecimal getDiscountPrice(@NonNull final Map<String, List<Product>> items) {
         final List<Product> products = items.get(productCode);
         if (products == null || products.isEmpty()) {
             return new BigDecimal(0);
