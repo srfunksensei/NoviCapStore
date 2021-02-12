@@ -1,26 +1,16 @@
 package com.mb.product;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JsonProductFileReader {
 
@@ -28,7 +18,7 @@ public class JsonProductFileReader {
 
     public static final String PRODUCT_FILE_NAME = "json/products.json";
 
-    private Reader reader;
+    private final Reader reader;
 
     public JsonProductFileReader(final String fileName) throws FileNotFoundException {
         if (fileName == null || !fileName.endsWith(".json")) {
@@ -40,7 +30,7 @@ public class JsonProductFileReader {
             throw new FileNotFoundException();
         }
         
-        File tempFile = null;
+        File tempFile;
         try {
             tempFile = File.createTempFile("products", null);
             tempFile.deleteOnExit();
@@ -100,6 +90,6 @@ public class JsonProductFileReader {
             logger.log(Level.WARNING, "Could not parse json object: " + e.getMessage());
         }
 
-        return products.stream().collect(Collectors.toSet());
+        return new HashSet<>(products);
     }
 }
