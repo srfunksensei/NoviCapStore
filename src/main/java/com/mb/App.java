@@ -3,14 +3,7 @@ package com.mb;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.mb.cart.Cart;
@@ -31,7 +24,7 @@ public class App {
         try {
             final JsonProductInventory inventory = new JsonProductInventory();
             items = inventory.getItems();
-            for (Product item : items) {
+            for (final Product item : items) {
                 out.println(item.toString());
             }
         } catch (FileNotFoundException e) {
@@ -49,14 +42,14 @@ public class App {
             final String codes = "(" + String.join(",", items.stream().map(Product::getCode).collect(Collectors.toSet())) + ")";
             final Cart cart = createCart();
             
-            String more = "y";
+            String more = answer;
             while (more.equalsIgnoreCase("y")) {
                 out.println("Which product you wish to buy? " + codes);
                 final String code = in.next();
                 
-                Optional<Product> item = items.stream().filter(i -> i.getCode().equalsIgnoreCase(code)).findAny();
-                if (item.isPresent()) {
-                    cart.addItem(item.get());
+                final Optional<Product> itemOpt = items.stream().filter(i -> i.getCode().equalsIgnoreCase(code)).findAny();
+                if (itemOpt.isPresent()) {
+                    cart.addItem(itemOpt.get());
                 } else {
                     out.println("This product is not available in our shop");
                 }
@@ -67,8 +60,7 @@ public class App {
             
             out.println("Your cart: ");
             cart.receipt();
-            
-        } 
+        }
         
         out.println("Thank you for visiting our store!");
         
@@ -87,8 +79,8 @@ public class App {
             private static final long serialVersionUID = 1L;
 
             {
-                put(voucher, Arrays.asList(discountStrategyVoucher));
-                put(tshirt, Arrays.asList(discountStrategyTshirt));
+                put(voucher, Collections.singletonList(discountStrategyVoucher));
+                put(tshirt, Collections.singletonList(discountStrategyTshirt));
             }
         };
 
