@@ -17,10 +17,9 @@ The checkout process allows for items to be scanned in any order, and should ret
 
 To be able to see the application in action you must follow these steps:
 
-1. run `mvn assembly:single`
-2. run `java -jar target/novi-cap-store-0.0.1`
+1. run `mvn clean install package`
+2. run `java -jar target/novi-cap-store-0.0.1.jar`
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details. 
-
+This product is available under the MIT license. See the [LICENSE](LICENSE.md) file for more info.
