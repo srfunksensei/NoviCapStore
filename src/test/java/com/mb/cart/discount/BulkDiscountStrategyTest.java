@@ -13,10 +13,10 @@ import com.mb.product.Product;
 
 public class BulkDiscountStrategyTest {
 
-    final static String PRODUCT_CODE = "TSHIRT";
-    final static int N = 3;
-    final static BigDecimal PRODUCT_REDUCED_PRICE = new BigDecimal(19);
-    final static Product PRODUCT_T_SHIRT = new Product(PRODUCT_CODE, "NoviCap T-Shirt", new BigDecimal(20));
+    private final static String PRODUCT_CODE = "TSHIRT";
+    private final static int N = 3;
+    private final static BigDecimal PRODUCT_REDUCED_PRICE = new BigDecimal(19);
+    private final static Product PRODUCT_T_SHIRT = new Product(PRODUCT_CODE, "NoviCap T-Shirt", new BigDecimal(20));
     
     @Test
     public void testNoVoucherItems() {
@@ -56,7 +56,7 @@ public class BulkDiscountStrategyTest {
         Assert.assertEquals(PRODUCT_REDUCED_PRICE.multiply(new BigDecimal(numOfItems)), discountPrice);
     }
     
-    private final List<Product> getProductList(final int numOfItems) {
+    private List<Product> getProductList(final int numOfItems) {
         final List<Product> products = new ArrayList<>();
         for (int i = 0; i < numOfItems; i++) {
             products.add(PRODUCT_T_SHIRT);

@@ -13,12 +13,12 @@ import org.junit.Test;
 import com.mb.product.Product;
 
 public class NForOneDiscountStrategyTest {
-    
-    final static int N = 2;
-    final static String PRODUCT_CODE = "VOUCHER";
-    final static Product PRODUCT_VOUCHER = new Product(PRODUCT_CODE, "NoviCap Voucher", new BigDecimal(5));
-    final static int PRODUCT_NUMBER_LIMIT = 50;
-    final static Random RANDOM_GENERATOR = new Random();
+
+    private final static String PRODUCT_CODE = "VOUCHER";
+    private final static int N = 2;
+    private final static Product PRODUCT_VOUCHER = new Product(PRODUCT_CODE, "NoviCap Voucher", new BigDecimal(5));
+    private final static int PRODUCT_NUMBER_LIMIT = 50;
+    private final static Random RANDOM_GENERATOR = new Random();
     
     @Test
     public void testNoVoucherItems() {
@@ -93,15 +93,15 @@ public class NForOneDiscountStrategyTest {
         Assert.assertEquals(expectedPrice, discountPrice);
     }
     
-    private final int getEvenNumOfItems(final int limit) {
+    private int getEvenNumOfItems(final int limit) {
         return RANDOM_GENERATOR.nextInt(limit / 2) * 2;
     }
     
-    private final int getOddNumOfItems(final int limit) {
+    private int getOddNumOfItems(final int limit) {
         return getEvenNumOfItems(limit) + 1;
     }
     
-    private final List<Product> getProductList(final int numOfItems) {
+    private List<Product> getProductList(final int numOfItems) {
         final List<Product> products = new ArrayList<>();
         for (int i = 0; i < numOfItems; i++) {
             products.add(PRODUCT_VOUCHER);
