@@ -1,11 +1,7 @@
 package com.mb.cart;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,12 +15,12 @@ public class CartTest {
 
     final static Product PRODUCT_VOUCHER = new Product("VOUCHER", "NoviCap Voucher", new BigDecimal(5));
     final static Product PRODUCT_T_SHIRT = new Product("TSHIRT", "NoviCap T-Shirt", new BigDecimal(20));
-    final static Product PRODUCT_MUG = new Product("MUG", "NoviCap Coffee Mug", new BigDecimal(7.5));
+    final static Product PRODUCT_MUG = new Product("MUG", "NoviCap Coffee Mug", new BigDecimal("7.5"));
 
     @Test
     public void testEmptyCart() {
         final Cart cart = new Cart();
-        Assert.assertEquals(true, cart.isEmpty());
+        Assert.assertTrue(cart.isEmpty());
     }
 
     @Test
@@ -33,13 +29,13 @@ public class CartTest {
         items.add(PRODUCT_VOUCHER);
 
         final Cart cart = new Cart(items);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
     }
 
     @Test
     public void testNumberOfProductsEmptyCart() {
         final Cart cart = new Cart();
-        Assert.assertEquals(true, cart.isEmpty());
+        Assert.assertTrue(cart.isEmpty());
         Assert.assertEquals(0, cart.getNumberOfProducts(PRODUCT_VOUCHER.getCode()));
     }
 
@@ -49,7 +45,7 @@ public class CartTest {
         items.add(PRODUCT_VOUCHER);
 
         final Cart cart = new Cart(items);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
         Assert.assertEquals(0, cart.getNumberOfProducts("TEST"));
     }
 
@@ -62,22 +58,22 @@ public class CartTest {
     @Test
     public void testAddItemProduct() {
         final Cart cart = new Cart();
-        Assert.assertEquals(true, cart.isEmpty());
+        Assert.assertTrue(cart.isEmpty());
 
         cart.addItem(PRODUCT_VOUCHER);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
         Assert.assertEquals(1, cart.getNumberOfProducts(PRODUCT_VOUCHER.getCode()));
     }
 
     @Test
     public void testAddItemMultipleSameTypeProduct() {
         final Cart cart = new Cart();
-        Assert.assertEquals(true, cart.isEmpty());
+        Assert.assertTrue(cart.isEmpty());
 
         cart.addItem(PRODUCT_VOUCHER);
         cart.addItem(PRODUCT_VOUCHER);
         cart.addItem(PRODUCT_VOUCHER);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
         Assert.assertEquals(3, cart.getNumberOfProducts(PRODUCT_VOUCHER.getCode()));
     }
 
@@ -90,10 +86,10 @@ public class CartTest {
     @Test
     public void testRemoveItemNonExistingProduct() {
         final Cart cart = new Cart();
-        Assert.assertEquals(true, cart.isEmpty());
+        Assert.assertTrue(cart.isEmpty());
 
         boolean isRemoved = cart.removeItem(PRODUCT_VOUCHER);
-        Assert.assertEquals(false, isRemoved);
+        Assert.assertFalse(isRemoved);
     }
 
     @Test
@@ -102,10 +98,10 @@ public class CartTest {
         items.add(PRODUCT_VOUCHER);
 
         final Cart cart = new Cart(items);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
 
         cart.removeItem(PRODUCT_VOUCHER);
-        Assert.assertEquals(true, cart.isEmpty());
+        Assert.assertTrue(cart.isEmpty());
     }
 
     @Test
@@ -115,17 +111,17 @@ public class CartTest {
         items.add(PRODUCT_VOUCHER);
 
         final Cart cart = new Cart(items);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
 
         cart.removeItem(PRODUCT_VOUCHER);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
         Assert.assertEquals(1, cart.getNumberOfProducts(PRODUCT_VOUCHER.getCode()));
     }
 
     @Test
     public void testTotalEmptyCart() {
         final Cart cart = new Cart();
-        Assert.assertEquals(true, cart.isEmpty());
+        Assert.assertTrue(cart.isEmpty());
 
         final BigDecimal total = cart.getTotal();
         Assert.assertEquals(new BigDecimal(0), total);
@@ -137,7 +133,7 @@ public class CartTest {
         items.add(PRODUCT_VOUCHER);
 
         final Cart cart = new Cart(items);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
 
         final BigDecimal total = cart.getTotal();
         Assert.assertEquals(PRODUCT_VOUCHER.getPrice(), total);
@@ -152,13 +148,13 @@ public class CartTest {
             private static final long serialVersionUID = 1L;
 
             {
-                put(PRODUCT_VOUCHER.getCode(), Arrays.asList(discountStrategyVoucher));
-                put(PRODUCT_T_SHIRT.getCode(), Arrays.asList(discountStrategyTshirt));
+                put(PRODUCT_VOUCHER.getCode(), Collections.singletonList(discountStrategyVoucher));
+                put(PRODUCT_T_SHIRT.getCode(), Collections.singletonList(discountStrategyTshirt));
             }
         };
 
         final Cart cart = new Cart(discountStrategies, new ArrayList<>());
-        Assert.assertEquals(true, cart.isEmpty());
+        Assert.assertTrue(cart.isEmpty());
 
         final BigDecimal total = cart.getTotalDiscounted();
         Assert.assertEquals(new BigDecimal(0), total);
@@ -182,15 +178,15 @@ public class CartTest {
             private static final long serialVersionUID = 1L;
 
             {
-                put(PRODUCT_VOUCHER.getCode(), Arrays.asList(discountStrategyVoucher));
-                put(PRODUCT_T_SHIRT.getCode(), Arrays.asList(discountStrategyTshirt));
+                put(PRODUCT_VOUCHER.getCode(), Collections.singletonList(discountStrategyVoucher));
+                put(PRODUCT_T_SHIRT.getCode(), Collections.singletonList(discountStrategyTshirt));
             }
         };
         
         final Cart cart = new Cart(discountStrategies, items);
-        Assert.assertEquals(false, cart.isEmpty());
+        Assert.assertFalse(cart.isEmpty());
 
         final BigDecimal total = cart.getTotalDiscounted();
-        Assert.assertEquals(new BigDecimal(74.5), total);
+        Assert.assertEquals(new BigDecimal("74.5"), total);
     }
 }
