@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.Set;
 
 import org.assertj.core.util.Files;
@@ -16,6 +18,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class JsonProductFileReaderTest {
+
+    private static final String TEST_JSON_FILE_NAME = "test.json";
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidExtensionFileName() {
@@ -51,8 +55,6 @@ public class JsonProductFileReaderTest {
         }
     }
 
-    private static final String TEST_JSON_FILE_NAME = "test.json";
-
     private File createNewFileInTempDir(final String file) {
         final File dir = Files.newTemporaryFolder();
         return Files.newFile(dir.getPath() + "/" + file);
@@ -76,11 +78,8 @@ public class JsonProductFileReaderTest {
     public void testEmptyProductList() {
         final File f = createNewFileInTempDir(TEST_JSON_FILE_NAME);
 
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"))) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("[]");
-
-            writer.write(sb.toString());
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8))) {
+            writer.write("[]");
         } catch (Exception e1) {
             Assert.fail("Expected to write data to file");
         }
@@ -100,18 +99,15 @@ public class JsonProductFileReaderTest {
         final Product expected = new Product("VOUCHER", "NoviCap Voucher", new BigDecimal(5));
 
         final File f = createNewFileInTempDir(TEST_JSON_FILE_NAME);
-
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"))) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("[").append("\n") //
-                    .append("{").append("\n") //
-                    .append("\"code\": \"").append(expected.getCode()).append("\"\n") //
-                    .append("\"name\": \"").append(expected.getName()).append("\"\n") //
-                    .append("\"price\":").append(expected.getPrice().toString()).append("\n") //
-                    .append("}").append("\n") //
-                    .append("]");
-
-            writer.write(sb.toString());
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8))) {
+            final String sb = "[" + "\n" + //
+                    "{" + "\n" + //
+                    "\"code\": \"" + expected.getCode() + "\"\n" + //
+                    "\"name\": \"" + expected.getName() + "\"\n" + //
+                    "\"price\":" + expected.getPrice().toString() + "\n" + //
+                    "}" + "\n" + //
+                    "]";
+            writer.write(sb);
         } catch (Exception e1) {
             Assert.fail("Expected to write data to file");
         }
@@ -122,7 +118,10 @@ public class JsonProductFileReaderTest {
 
              Assert.assertEquals(1, items.size());
              
-             Product first = items.stream().findFirst().get();
+             final Optional<Product> firstOpt = items.stream().findFirst();
+             Assert.assertTrue(firstOpt.isPresent());
+
+             final Product first = firstOpt.get();
              Assert.assertEquals(expected.getCode(), first.getCode());
              Assert.assertEquals(expected.getName(), first.getName());
              Assert.assertEquals(expected.getPrice(), first.getPrice());
