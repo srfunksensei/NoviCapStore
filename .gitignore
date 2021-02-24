@@ -88,12 +88,22 @@ out/
 # Editor-based Rest Client
 .idea/httpRequests
 
-### Intellij Patch ###
+# CMake
+cmake-build-*/
 
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
+# Mongo Explorer plugin
+.idea/**/mongoSettings.xml
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+*.iml
+modules.xml
+.idea/misc.xml
+*.ipr
 
 ### Java ###
 # Compiled class file
@@ -123,7 +133,6 @@ target/
 
 ### Maven ###
 /target/
-target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -212,4 +221,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
 
